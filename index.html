@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>日本退稅計算器 2026新制</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #f0f2f5;
+    color: #1a1a1a;
+    padding: 16px;
+    line-height: 1.5;
+  }
+  .container {
+    max-width: 420px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a365d, #2b6cb0);
+    color: white;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .header p {
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
+  .body {
+    padding: 20px 16px;
+  }
+  .section {
+    margin-bottom: 20px;
+  }
+  .label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2d3748;
+  }
+  .input-group {
+    position: relative;
+  }
+  input[type="number"], select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1.1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f7fafc;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  input[type="number"]:focus, select:focus {
+    border-color: #3182ce;
+    background: #fff;
+  }
+  .yen {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
+    font-weight: 600;
+  }
+  .radio-group {
+    display: flex;
+    gap: 10px;
+  }
+  .radio-item {
+    flex: 1;
+    text-align: center;
+  }
+  .radio-item input {
+    display: none;
+  }
+  .radio-item label {
+    display: block;
+    padding: 12px 8px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f7fafc;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 78px;
+  }
+  .radio-item input:checked + label {
+    border-color: #3182ce;
+    background: #ebf8ff;
+    color: #2b6cb0;
+  }
+  .radio-item input:checked + label div:last-child {
+    color: #2c5282;
+  }
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+  .result-box {
+    background: #f0fff4;
+    border: 2px solid #9ae6b4;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 8px;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
+  }
+  .result-row.main {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #276749;
+    border-top: 1px dashed #9ae6b4;
+    margin-top: 8px;
+    padding-top: 12px;
+  }
+  .result-row span:last-child {
+    font-weight: 600;
+  }
+  .note {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-top: 16px;
+    padding: 12px;
+    background: #fffaf0;
+    border-radius: 8px;
+    border-left: 4px solid #ed8936;
+  }
+  .note strong {
+    color: #c05621;
+  }
+  .footer {
+    text-align: center;
+    padding: 12px;
+    font-size: 0.7rem;
+    color: #a0aec0;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>日本退稅計算器</h1>
+      <p>2026年11月新制 · 輸入金額即計</p>
+    </div>
+
+    <div class="body">
+      <!-- 金額輸入 -->
+      <div class="section">
+        <label class="label">你買咗幾多錢？（含稅總額）</label>
+        <div class="input-group">
+          <input type="number" id="amount" placeholder="例如 11000" min="0" step="1" inputmode="numeric">
+          <span class="yen">円</span>
+        </div>
+      </div>
+
+      <!-- 稅率 -->
+      <div class="section">
+        <label class="label">稅率</label>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" name="taxRate" id="rate10" value="10" checked>
+            <label for="rate10">
+              <div style="font-size:1.15rem;font-weight:700;">10%</div>
+              <div style="font-size:0.68rem;font-weight:400;margin-top:5px;line-height:1.35;color:#4a5568;">
+                衣服・電器・藥妝<br>化妝品・酒・雜貨
+              </div>
+            </label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="taxRate" id="rate8" value="8">
+            <label for="rate8">
+              <div style="font-size:1.15rem;font-weight:700;">8%</div>
+              <div style="font-size:0.68rem;font-weight:400;margin-top:5px;line-height:1.35;color:#4a5568;">
+                食品・非酒精飲品<br>（自己帶走食）
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 退稅公司 -->
+      <div class="section">
+        <label class="label">揀退稅公司 / 店家類型</label>
+        <select id="company">
+          <option value="0">唐吉訶德 / Bic Camera / 多慶屋 / 鶴羽（0%）</option>
+          <option value="1.5">三井Outlet / LaLaport（PIE 約1.5%）</option>
+          <option value="1.55">澀谷109 / 舊制百貨（約1.55%）</option>
+          <option value="2">Montbell 等（PIE 約2%）</option>
+          <option value="3">PIE VAT 實測高位（約3%）</option>
+          <option value="fixed320">3COINS（JP Refund 固定¥320）</option>
+          <option value="fixed210">EDION（固定¥210）</option>
+          <option value="2.1">Animate 等（Ocean 約2.1%）</option>
+          <option value="custom">自訂比例（%）</option>
+        </select>
+      </div>
+
+      <!-- 自訂比例 -->
+      <div class="section" id="customSection" style="display:none;">
+        <label class="label">自訂手續費比例（% of 未稅金額）</label>
+        <div class="input-group">
+          <input type="number" id="customRate" placeholder="例如 1.5" min="0" max="10" step="0.1" value="1.5">
+          <span class="yen">%</span>
+        </div>
+      </div>
+
+      <!-- 結果 -->
+      <div class="section">
+        <label class="label">計算結果</label>
+        <div class="result-box" id="result">
+          <div class="result-row">
+            <span>未稅金額</span>
+            <span id="preTax">—</span>
+          </div>
+          <div class="result-row">
+            <span>消費稅金額</span>
+            <span id="taxAmount">—</span>
+          </div>
+          <div class="result-row">
+            <span>手續費</span>
+            <span id="fee">—</span>
+          </div>
+          <div class="result-row main">
+            <span>實際可退</span>
+            <span id="netRefund">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>注意：</strong>手續費由店家決定，以上係目前已知資料估算。結帳前一定要問店員「最終的にいくら返金されますか？」。小額用固定手續費會好蝕。
+      </div>
+    </div>
+
+    <div class="footer">
+      資料截至 2026年10月 · 僅供參考
+    </div>
+  </div>
+
+<script>
+  const amountInput = document.getElementById('amount');
+  const companySelect = document.getElementById('company');
+  const customSection = document.getElementById('customSection');
+  const customRateInput = document.getElementById('customRate');
+  const rateRadios = document.querySelectorAll('input[name="taxRate"]');
+
+  function formatYen(num) {
+    return '¥' + Math.round(num).toLocaleString('ja-JP');
+  }
+
+  function calculate() {
+    const amount = parseFloat(amountInput.value) || 0;
+    const taxRate = parseFloat(document.querySelector('input[name="taxRate"]:checked').value);
+    const companyVal = companySelect.value;
+
+    if (amount <= 0) {
+      document.getElementById('preTax').textContent = '—';
+      document.getElementById('taxAmount').textContent = '—';
+      document.getElementById('fee').textContent = '—';
+      document.getElementById('netRefund').textContent = '—';
+      return;
+    }
+
+    // 含稅 → 未稅
+    const preTax = amount / (1 + taxRate / 100);
+    const taxAmount = amount - preTax;
+
+    let fee = 0;
+    let feeLabel = '';
+
+    if (companyVal === 'fixed320') {
+      fee = 320;
+    } else if (companyVal === 'fixed210') {
+      fee = 210;
+    } else if (companyVal === 'custom') {
+      const rate = parseFloat(customRateInput.value) || 0;
+      fee = preTax * (rate / 100);
+    } else {
+      // 比例制（of 未稅金額）
+      const rate = parseFloat(companyVal);
+      fee = preTax * (rate / 100);
+    }
+
+    const net = Math.max(0, taxAmount - fee);
+
+    document.getElementById('preTax').textContent = formatYen(preTax);
+    document.getElementById('taxAmount').textContent = formatYen(taxAmount);
+    document.getElementById('fee').textContent = formatYen(fee);
+    document.getElementById('netRefund').textContent = formatYen(net);
+  }
+
+  // 顯示/隱藏自訂
+  companySelect.addEventListener('change', () => {
+    customSection.style.display = companySelect.value === 'custom' ? 'block' : 'none';
+    calculate();
+  });
+
+  // 即時計算
+  amountInput.addEventListener('input', calculate);
+  customRateInput.addEventListener('input', calculate);
+  rateRadios.forEach(r => r.addEventListener('change', calculate));
+
+  // 初始
+  calculate();
+</script>
+</body>
+</html>
